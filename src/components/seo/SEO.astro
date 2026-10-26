@@ -1,0 +1,63 @@
+---
+import { site } from "@/data/site";
+import SchemaOrg from "./SchemaOrg.astro";
+
+interface Props {
+    title?: string;
+    description?: string;
+    image?: string;
+    imageAlt?: string;
+    canonical?: string;
+    noindex?: boolean;
+}
+
+const {
+    title = site.info.fullName,
+    description = site.info.description,
+    image = "/og-image.png",
+    imageAlt = title,
+    canonical = Astro.url.pathname,
+    noindex = false,
+} = Astro.props;
+
+// Construção de URLs absolutas
+const canonicalURL = new URL(canonical, Astro.site || site.info.url);
+const imageURL = new URL(image, canonicalURL);
+
+// Pega a primeira cidade da sua lista de atendimento para o Geo SEO
+const mainCity = site.cities[0]?.name || site.data.addressLocality;
+const mainRegion = `BR-${site.data.addressRegion}`;
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Geo SEO / Localisation -->
+<meta name="geo.region" content={mainRegion} />
+<meta name="geo.placename" content={mainCity} />
+
+<!-- Open Graph / Facebook / WhatsApp / LinkedIn / Discord / X -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageURL} />
+<meta property="og:image:alt" content={imageAlt} />
+<meta property="og:site_name" content={site.info.name} />
+<meta property="og:locale" content="pt_BR" />
+
+<!-- Schema.org JSON-LD -->
+<SchemaOrg />

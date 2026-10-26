@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "@fontsource/inter";
+@import "@fontsource/poppins";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Poppins", sans-serif;
+
+  /* Cores */
+  --color-background: #141415;
+  --color-text: #F5E8D8;
+  --color-primary: #FF6F61;
+  --color-secondary: #DAA520;
+  --color-hover: #FF4500;
+}
