@@ -1,18 +1,21 @@
 ---
 import { site } from "@/data/site";
 
-const taxIdentifier = "";
+interface Props {
+  description?: string;
+}
+
+const { description = site.info.description } = Astro.props;
 
 const schema: Record<string, any> = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: site.info.name,
-    legalName: site.info.name,
     image: new URL("/og-image.png", Astro.site || site.info.url).href,
     telephone: site.contact.phone,
     email: site.contact.email,
     url: site.info.url,
-    description: site.info.description,
+    description,
     address: {
         "@type": "PostalAddress",
         addressLocality: site.data.addressLocality,
@@ -24,16 +27,8 @@ const schema: Record<string, any> = {
         name: city.name,
         description: city.description,
     })),
-    sameAs: [
-        site.socials.instagram,
-        site.socials.github,
-        site.socials.linkedin,
-    ].filter(Boolean),
+    sameAs: [site.socials.github, site.socials.linkedin].filter(Boolean),
 };
-
-if (taxIdentifier) {
-    schema.taxID = taxIdentifier;
-}
 ---
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />

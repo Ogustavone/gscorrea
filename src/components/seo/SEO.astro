@@ -29,35 +29,35 @@ const mainCity = site.cities[0]?.name || site.data.addressLocality;
 const mainRegion = `BR-${site.data.addressRegion}`;
 ---
 
-<!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Canonical URL -->
-<link rel="canonical" href={canonicalURL} />
+{!noindex && <link rel="canonical" href={canonicalURL} />}
 
-<!-- Primary Meta Tags -->
 <title>{title}</title>
-<meta name="title" content={title} />
 <meta name="description" content={description} />
 
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 
-<!-- Geo SEO / Localisation -->
 <meta name="geo.region" content={mainRegion} />
 <meta name="geo.placename" content={mainCity} />
 
-<!-- Open Graph / Facebook / WhatsApp / LinkedIn / Discord / X -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={imageURL} />
 <meta property="og:image:alt" content={imageAlt} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta property="og:site_name" content={site.info.name} />
 <meta property="og:locale" content="pt_BR" />
 
-<!-- Schema.org JSON-LD -->
-<SchemaOrg />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+<meta name="twitter:image:alt" content={imageAlt} />
+
+{!noindex && <SchemaOrg description={description} />}

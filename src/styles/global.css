@@ -1,15 +1,165 @@
 @import "tailwindcss";
-@import "@fontsource/inter";
-@import "@fontsource/poppins";
 
-@theme {
-  --font-sans: "Inter", sans-serif;
-  --font-display: "Poppins", sans-serif;
+/* Fontes — 2 pesos por família (via @fontsource) */
+@import "@fontsource/archivo/600.css";
+@import "@fontsource/archivo/700.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
 
-  /* Cores */
-  --color-background: #141415;
-  --color-text: #F5E8D8;
-  --color-primary: #FF6F61;
-  --color-secondary: #DAA520;
-  --color-hover: #FF4500;
+@theme static {
+  /* ------------------------------------------------------------------ */
+  /* Tipografia                                                          */
+  /* ------------------------------------------------------------------ */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Archivo", "Inter", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Escala tipográfica: tamanho / peso / line-height / letter-spacing */
+  --text-display: 4.5rem;
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 700;
+
+  --text-name: clamp(3.25rem, 9.5vw, 8.5rem);
+  --text-name--line-height: 0.9;
+  --text-name--letter-spacing: -0.045em;
+  --text-name--font-weight: 700;
+
+  --text-year: clamp(3.5rem, 6vw, 5.5rem);
+  --text-year--line-height: 0.95;
+  --text-year--letter-spacing: -0.03em;
+  --text-year--font-weight: 700;
+
+  --text-course: clamp(1.75rem, 2.5vw, 2rem);
+  --text-course--line-height: 1.15;
+  --text-course--letter-spacing: -0.02em;
+  --text-course--font-weight: 600;
+
+  --text-subtitle: 1.5rem;
+  --text-subtitle--line-height: 1.2;
+  --text-subtitle--letter-spacing: -0.015em;
+  --text-subtitle--font-weight: 600;
+
+  --text-title: 2.75rem;
+  --text-title--line-height: 1.08;
+  --text-title--letter-spacing: -0.025em;
+  --text-title--font-weight: 600;
+
+  --text-heading: 2.25rem;
+  --text-heading--line-height: 1.15;
+  --text-heading--letter-spacing: -0.02em;
+  --text-heading--font-weight: 600;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.6;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.4;
+  --text-meta--letter-spacing: 0.12em;
+  --text-meta--font-weight: 500;
+
+  --text-meta-sm: 0.6875rem;
+  --text-meta-sm--line-height: 1.4;
+  --text-meta-sm--letter-spacing: 0.12em;
+  --text-meta-sm--font-weight: 500;
+
+  /* ------------------------------------------------------------------ */
+  /* Cores — paleta quente aprovada                                      */
+  /* ------------------------------------------------------------------ */
+  --color-background: #0c0a09;
+  --color-surface: #161311;
+  --color-surface-raised: #1d1916;
+  --color-surface-sunken: #080706;
+
+  --color-border: #2f2a25;
+  --color-border-strong: #6b6259;
+
+  --color-text: #f5f2ed;
+  --color-text-muted: #a8a29e;
+
+  --color-primary-text: #f5f2ed;
+  --color-secondary-text: #a8a29e;
+
+  --color-primary: #f59e0b;
+  --color-primary-soft: #f59e0b1a;
+  --color-hover: #d97706;
+
+  /* Estados */
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+
+  /* Camadas flutuantes */
+  --color-backdrop: rgb(8 7 6 / 0.75);
+
+  /* ------------------------------------------------------------------ */
+  /* Raios — 3 níveis                                                    */
+  /* ------------------------------------------------------------------ */
+  --radius-control: 0.375rem;
+  --radius-surface: 0.625rem;
+  --radius-float: 0.875rem;
+
+  /* ------------------------------------------------------------------ */
+  /* Sombras — 3 níveis, preto com alpha                                 */
+  /* ------------------------------------------------------------------ */
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.35);
+  --shadow-2: 0 8px 24px rgb(0 0 0 / 0.45);
+  --shadow-3: 0 24px 64px rgb(0 0 0 / 0.55);
+
+  /* ------------------------------------------------------------------ */
+  /* Espaçamento                                                         */
+  /* ------------------------------------------------------------------ */
+  --spacing: 0.25rem;
+  --spacing-gutter: 1rem;
+  --spacing-gutter-lg: 2rem;
+  --spacing-stack: 1.5rem;
+  --spacing-section: 5rem;
+  --spacing-section-lg: 6rem;
+
+  /* Larguras máximas de conteúdo */
+  --container-narrow: 36rem;
+  --container-content: 72rem;
+  --container-wide: 80rem;
+
+  /* ------------------------------------------------------------------ */
+  /* Motion                                                              */
+  /* ------------------------------------------------------------------ */
+  --duration-fast: 150ms;
+  --duration-base: 180ms;
+  --duration-slow: 250ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --blur-orb: 120px;
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
 }
