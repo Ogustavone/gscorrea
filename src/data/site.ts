@@ -9,7 +9,7 @@ export const site = {
   contact: {
     phone: "+5555999167014",
     phoneDisplay: "(55) 99916-7014",
-    email: "gscorrea@gmail.com",
+    email: "gscorrea.dev@gmail.com",
   },
 
   data: {

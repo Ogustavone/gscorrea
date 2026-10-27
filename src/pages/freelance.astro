@@ -5,9 +5,10 @@ import { site } from "@/data/site";
 
 const phoneDigits = site.contact.phone.replace(/\D/g, "");
 
-const whatsappHref: string = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(
-  "Olá, vim pelo seu site e gostaria de solicitar um orçamento.",
-)}`;
+const defaultMessage =
+  "Olá, vim pelo seu site e gostaria de solicitar um orçamento.";
+
+const whatsappHref: string = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(defaultMessage)}`;
 const emailHref = `mailto:${site.contact.email}?subject=${encodeURIComponent(
   "Orçamento de projeto",
 )}`;
@@ -235,10 +236,19 @@ const errorText = "mt-2 text-sm text-error";
 
         <form
           id="budget-form"
-          data-whatsapp={phoneDigits}
+          action={`https://wa.me/${phoneDigits}`}
+          method="get"
+          target="_blank"
           novalidate
           class="mt-12 lg:col-span-8 lg:mt-0"
         >
+          <input
+            type="hidden"
+            id="budget-text"
+            name="text"
+            value={defaultMessage}
+          />
+
           <div class="grid gap-6 sm:grid-cols-2">
             <div>
               <label for="budget-name" class={label}>
@@ -248,7 +258,6 @@ const errorText = "mt-2 text-sm text-error";
               </label>
               <input
                 id="budget-name"
-                name="name"
                 type="text"
                 required
                 autocomplete="name"
@@ -266,7 +275,6 @@ const errorText = "mt-2 text-sm text-error";
               </label>
               <input
                 id="budget-contact"
-                name="contact"
                 type="text"
                 required
                 autocomplete="email"
@@ -290,7 +298,6 @@ const errorText = "mt-2 text-sm text-error";
               </label>
               <select
                 id="budget-type"
-                name="projectType"
                 required
                 aria-describedby="budget-type-error"
                 class={field}
@@ -313,7 +320,7 @@ const errorText = "mt-2 text-sm text-error";
                   >(opcional)</span
                 >
               </label>
-              <select id="budget-deadline" name="deadline" class={field}>
+              <select id="budget-deadline" class={field}>
                 <option value="A definir">A definir</option>
                 <option value="O quanto antes">O quanto antes</option>
                 <option value="Em 1 a 2 meses">Em 1 a 2 meses</option>
@@ -333,7 +340,6 @@ const errorText = "mt-2 text-sm text-error";
             </p>
             <textarea
               id="budget-details"
-              name="details"
               required
               rows="6"
               aria-describedby="budget-details-hint budget-details-error"
@@ -363,7 +369,7 @@ const errorText = "mt-2 text-sm text-error";
         icon: "/whatsapp.svg",
         label: "WhatsApp",
         class: "bg-green-400/70",
-      }
+      },
     ]}
   />
 
@@ -381,163 +387,148 @@ const errorText = "mt-2 text-sm text-error";
     </p>
   </div>
 
-  <script is:inline>
-    (function () {
-      if (window.__budgetFormBound) return;
-      window.__budgetFormBound = true;
+  <script>
+    const FIELD_IDS = [
+      "budget-name",
+      "budget-contact",
+      "budget-type",
+      "budget-details",
+    ];
+    let toastTimer: number | undefined;
+    let hideTimer: number | undefined;
 
-      var toastTimer;
-      var hideTimer;
+    function showToast(message: string, type: "error" | "success") {
+      const toast = document.getElementById("toast");
+      if (!toast) return;
 
-      var showToast = function (message, type) {
-        var toast = document.getElementById("toast");
-        if (!toast) return;
+      clearTimeout(toastTimer);
+      clearTimeout(hideTimer);
 
-        clearTimeout(toastTimer);
-        clearTimeout(hideTimer);
+      toast.textContent = message;
+      toast.classList.toggle("border-error", type === "error");
+      toast.classList.toggle("border-border-strong", type !== "error");
+      toast.hidden = false;
 
-        toast.textContent = message;
-        toast.classList.toggle("border-error", type === "error");
-        toast.classList.toggle("border-border-strong", type !== "error");
-        toast.hidden = false;
+      requestAnimationFrame(() => {
+        toast.classList.remove("opacity-0", "translate-x-full");
+        toast.classList.add("opacity-100", "translate-x-0");
+      });
 
-        requestAnimationFrame(function () {
-          toast.classList.remove("opacity-0", "translate-x-full");
-          toast.classList.add("opacity-100", "translate-x-0");
+      toastTimer = window.setTimeout(() => {
+        toast.classList.remove("opacity-100", "translate-x-0");
+        toast.classList.add("opacity-0", "translate-x-full");
+        hideTimer = window.setTimeout(() => (toast.hidden = true), 200);
+      }, 5000);
+    }
+
+    const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    const isPhone = (v: string) => {
+      const digits = v.replace(/\D/g, "");
+      return digits.length >= 10 && digits.length <= 13;
+    };
+
+    function setError(input: HTMLElement, message: string) {
+      const err = document.getElementById(`${input.id}-error`);
+      if (err) {
+        err.textContent = message;
+        err.hidden = false;
+      }
+      input.setAttribute("aria-invalid", "true");
+    }
+
+    function clearError(input: HTMLElement) {
+      const err = document.getElementById(`${input.id}-error`);
+      if (err) {
+        err.textContent = "";
+        err.hidden = true;
+      }
+      input.removeAttribute("aria-invalid");
+    }
+
+    function onEdit(e: Event) {
+      const t = e.target;
+      if (t instanceof HTMLElement && t.closest("#budget-form")) clearError(t);
+    }
+    document.addEventListener("input", onEdit);
+    document.addEventListener("change", onEdit);
+
+    document.addEventListener("submit", (event) => {
+      const form = event.target;
+      if (!(form instanceof HTMLFormElement) || form.id !== "budget-form")
+        return;
+
+      const $ = <T extends HTMLElement>(id: string) =>
+        form.querySelector<T>(`#${id}`)!;
+
+      const nameEl = $<HTMLInputElement>("budget-name");
+      const contactEl = $<HTMLInputElement>("budget-contact");
+      const typeEl = $<HTMLSelectElement>("budget-type");
+      const deadlineEl = $<HTMLSelectElement>("budget-deadline");
+      const detailsEl = $<HTMLTextAreaElement>("budget-details");
+      const textEl = $<HTMLInputElement>("budget-text");
+
+      FIELD_IDS.forEach((id) => clearError($(id)));
+
+      const problems: { input: HTMLElement; message: string }[] = [];
+      const contact = contactEl.value.trim();
+
+      if (nameEl.value.trim().length < 2)
+        problems.push({ input: nameEl, message: "Informe seu nome." });
+
+      if (!contact)
+        problems.push({
+          input: contactEl,
+          message: "Informe seu e-mail ou WhatsApp.",
+        });
+      else if (!isEmail(contact) && !isPhone(contact))
+        problems.push({
+          input: contactEl,
+          message: "Informe um e-mail válido ou um telefone com DDD.",
         });
 
-        toastTimer = setTimeout(function () {
-          toast.classList.remove("opacity-100", "translate-x-0");
-          toast.classList.add("opacity-0", "translate-x-full");
-          hideTimer = setTimeout(function () {
-            toast.hidden = true;
-          }, 200);
-        }, 5000);
-      };
+      if (!typeEl.value)
+        problems.push({
+          input: typeEl,
+          message: "Selecione o tipo de projeto.",
+        });
 
-      var isEmail = function (v) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-      };
-      var isPhone = function (v) {
-        var digits = v.replace(/\D/g, "");
-        return digits.length >= 10 && digits.length <= 13;
-      };
+      if (detailsEl.value.trim().length < 20)
+        problems.push({
+          input: detailsEl,
+          message: "Descreva o projeto com pelo menos 20 caracteres.",
+        });
 
-      var setError = function (input, message) {
-        var err = document.getElementById(input.id + "-error");
-        if (err) {
-          err.textContent = message;
-          err.hidden = false;
-        }
-        input.setAttribute("aria-invalid", "true");
-      };
-
-      var clearError = function (input) {
-        var err = document.getElementById(input.id + "-error");
-        if (err) {
-          err.textContent = "";
-          err.hidden = true;
-        }
-        input.removeAttribute("aria-invalid");
-      };
-
-      var onEdit = function (e) {
-        var t = e.target;
-        if (t && t.closest && t.closest("#budget-form")) clearError(t);
-      };
-      document.addEventListener("input", onEdit);
-      document.addEventListener("change", onEdit);
-
-      document.addEventListener("submit", function (event) {
-        var form = event.target;
-        if (!form || form.id !== "budget-form") return;
-
-        event.preventDefault();
-
-        var nameEl = document.getElementById("budget-name");
-        var contactEl = document.getElementById("budget-contact");
-        var typeEl = document.getElementById("budget-type");
-        var deadlineEl = document.getElementById("budget-deadline");
-        var detailsEl = document.getElementById("budget-details");
-        var whatsapp = form.getAttribute("data-whatsapp") || "";
-
-        [nameEl, contactEl, typeEl, detailsEl].forEach(clearError);
-
-        var problems = [];
-
-        if (nameEl.value.trim().length < 2) {
-          problems.push({ input: nameEl, message: "Informe seu nome." });
-        }
-
-        var contact = contactEl.value.trim();
-        if (!contact) {
-          problems.push({
-            input: contactEl,
-            message: "Informe seu e-mail ou WhatsApp.",
-          });
-        } else if (!isEmail(contact) && !isPhone(contact)) {
-          problems.push({
-            input: contactEl,
-            message: "Informe um e-mail válido ou um telefone com DDD.",
-          });
-        }
-
-        if (!typeEl.value) {
-          problems.push({
-            input: typeEl,
-            message: "Selecione o tipo de projeto.",
-          });
-        }
-
-        if (detailsEl.value.trim().length < 20) {
-          problems.push({
-            input: detailsEl,
-            message: "Descreva o projeto com pelo menos 20 caracteres.",
-          });
-        }
-
-        if (problems.length > 0) {
-          problems.forEach(function (p) {
-            setError(p.input, p.message);
-          });
-          showToast(
-            problems.length === 1
-              ? "Corrija 1 campo antes de enviar."
-              : "Corrija " + problems.length + " campos antes de enviar.",
-            "error",
-          );
-          problems[0].input.focus();
-          return;
-        }
-
-        var message = [
-          "Olá, vim pelo seu site e gostaria de solicitar um orçamento.",
-          "",
-          "Nome: " + nameEl.value.trim(),
-          "Contato: " + contactEl.value.trim(),
-          "Tipo de projeto: " + typeEl.value,
-          "Prazo desejado: " + deadlineEl.value,
-          "",
-          "Resumo do projeto:",
-          detailsEl.value.trim(),
-        ].join("\n");
-
-        var url =
-          "https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(message);
-
-        var link = document.createElement("a");
-        link.href = url;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-
+      if (problems.length > 0) {
+        event.preventDefault(); // só bloqueia se houver erro
+        problems.forEach((p) => setError(p.input, p.message));
         showToast(
-          "WhatsApp aberto em outra aba. Envie a mensagem por lá.",
-          "success",
+          problems.length === 1
+            ? "Corrija 1 campo antes de enviar."
+            : `Corrija ${problems.length} campos antes de enviar.`,
+          "error",
         );
-      });
-    })();
+        problems[0].input.focus();
+        return;
+      }
+
+      // Válido: preenche o campo hidden e deixa o envio nativo
+      // abrir o WhatsApp em nova aba (sem popup blocker).
+      textEl.value = [
+        "Olá, vim pelo seu site e gostaria de solicitar um orçamento.",
+        "",
+        `Nome: ${nameEl.value.trim()}`,
+        `Contato: ${contact}`,
+        `Tipo de projeto: ${typeEl.value}`,
+        `Prazo desejado: ${deadlineEl.value}`,
+        "",
+        "Resumo do projeto:",
+        detailsEl.value.trim(),
+      ].join("\n");
+
+      showToast(
+        "WhatsApp aberto em outra aba. Envie a mensagem por lá.",
+        "success",
+      );
+    });
   </script>
 </Layout>
