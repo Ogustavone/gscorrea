@@ -1,0 +1,387 @@
+---
+import Layout from "@/layouts/Base.astro";
+import Fab from "@/components/freelance/Fab.astro";
+import { site } from "@/data/site";
+
+const phoneDigits = site.contact.phone.replace(/\D/g, "");
+
+const whatsappHref: string = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(
+  "Olá, vim pelo seu site e gostaria de solicitar um orçamento.",
+)}`;
+const emailHref = `mailto:${site.contact.email}?subject=${encodeURIComponent(
+  "Orçamento de projeto",
+)}`;
+
+const title = "Sites, sistemas e automações sob medida para pequenos negócios";
+const description =
+  "Crio sites, sistemas e automações para pequenos negócios, com escopo definido, código seu e atendimento direto em Santa Maria e região.";
+
+const assurances = [
+  "Escopo, prazo e valor definidos antes de começar",
+  "Código e domínio ficam com você",
+  "Atendimento direto com quem desenvolve",
+] as const;
+
+const services = [
+  {
+    title: "Landing pages e sites",
+    description:
+      "Páginas de conversão e sites institucionais, rápidos e responsivos.",
+  },
+  {
+    title: "SEO técnico",
+    description:
+      "Ajustes de metadados, dados estruturados, sitemap e desempenho para busca.",
+  },
+  {
+    title: "Sistemas sob medida",
+    description:
+      "APIs e painéis para processos internos, com banco de dados e integrações.",
+  },
+  {
+    title: "Automações",
+    description:
+      "Rotinas que eliminam trabalho repetitivo e conectam sistemas diferentes.",
+  },
+] as const;
+
+const steps = [
+  {
+    title: "Conversa inicial",
+    description:
+      "Você explica o objetivo, o público e o que já existe. Com isso, defino o que faz sentido para o escopo.",
+  },
+  {
+    title: "Escopo e prazo",
+    description:
+      "Você recebe uma proposta com entregas, prazo e valor definidos antes de qualquer linha de código.",
+  },
+  {
+    title: "Desenvolvimento",
+    description:
+      "Acompanho o projeto com entregas incrementais e uma rodada de ajustes.",
+  },
+  {
+    title: "Publicação",
+    description:
+      "Deploy, domínio e configuração de SEO técnico. O código do projeto é seu.",
+  },
+] as const;
+
+// Classes compartilhadas (só tokens do @theme)
+const container = "mx-auto w-full max-w-5xl px-4 sm:px-6";
+const section = "border-b border-border py-16 sm:py-20 lg:py-24";
+const split = "lg:grid lg:grid-cols-12 lg:gap-12";
+const h2 =
+  "font-display text-2xl font-bold tracking-tight text-primary-text sm:text-3xl";
+const lead = "mt-4 max-w-md text-base leading-relaxed text-secondary-text";
+const focusRing =
+  "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-text";
+const textLink = `text-primary-text underline decoration-border-strong underline-offset-4 transition-colors duration-150 hover:decoration-primary-text ${focusRing}`;
+const btnBase =
+  "inline-flex min-h-12 items-center justify-center rounded-control px-6 text-base font-semibold transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-text";
+const btnPrimary = `${btnBase} bg-primary text-background hover:bg-hover`;
+const label = "mb-2 block text-sm font-semibold text-primary-text";
+const hint = "mb-2 text-sm text-secondary-text";
+const field =
+  "min-h-12 w-full rounded-control border border-border-strong bg-surface px-3.5 py-3 text-base text-primary-text transition-colors duration-150 placeholder:text-secondary-text hover:border-secondary-text focus-visible:border-primary-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text aria-invalid:border-error";
+const errorText = "mt-2 text-sm text-error";
+---
+
+<Layout title={title} description={description} image="/og-image.png">
+  <main>
+    <section class={section}>
+      <div class={container}>
+        <p class="text-sm text-secondary-text">
+          {site.data.addressLocality}, {site.data.addressRegion}
+        </p>
+        <h1
+          id="conteudo"
+          tabindex="-1"
+          class="mt-4 max-w-3xl font-display text-4xl font-bold leading-[1.08] tracking-tight text-primary-text focus:outline-none sm:text-5xl lg:text-6xl"
+        >
+          {title}
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-secondary-text">
+          Eu desenvolvo e publico o projeto do início ao fim. Você conversa
+          direto comigo, em Santa Maria e região.
+        </p>
+
+        <div
+          class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6"
+        >
+          <a href="#orcamento" class={`${btnPrimary} w-full sm:w-auto`}>
+            Solicitar orçamento
+          </a>
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={`${textLink} text-base`}
+          >
+            Ou fale pelo WhatsApp
+            <span class="sr-only"> (abre em nova aba)</span>
+          </a>
+        </div>
+
+        <ul
+          class="mt-16 grid gap-6 border-t border-border pt-8 text-base text-primary-text sm:grid-cols-3 sm:gap-8"
+        >
+          {assurances.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section id="servicos" class={section}>
+      <div class={`${container} ${split}`}>
+        <div class="lg:col-span-4">
+          <h2 class={h2}>O que faço</h2>
+          <p class={lead}>
+            Cada serviço é entregue com escopo definido, código organizado e
+            documentação de uso.
+          </p>
+        </div>
+        <dl
+          class="mt-10 divide-y divide-border border-y border-border lg:col-span-8 lg:mt-0"
+        >
+          {
+            services.map((service) => (
+              <div class="py-6 sm:grid sm:grid-cols-5 sm:gap-6">
+                <dt class="text-lg font-semibold text-primary-text sm:col-span-2">
+                  {service.title}
+                </dt>
+                <dd class="mt-2 text-base leading-relaxed text-secondary-text sm:col-span-3 sm:mt-0">
+                  {service.description}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <section id="como-funciona" class={section}>
+      <div class={`${container} ${split}`}>
+        <div class="lg:col-span-4">
+          <h2 class={h2}>Como funciona</h2>
+          <p class={lead}>
+            Do primeiro contato à publicação, em quatro etapas.
+          </p>
+        </div>
+        <ol
+          class="mt-10 divide-y divide-border border-y border-border lg:col-span-8 lg:mt-0"
+        >
+          {
+            steps.map((step, index) => (
+              <li class="flex gap-5 py-6">
+                <span
+                  class="w-6 shrink-0 text-lg font-semibold tabular-nums text-secondary-text"
+                  aria-hidden="true"
+                >
+                  {index + 1}
+                </span>
+                <div>
+                  <h3 class="text-lg font-semibold text-primary-text">
+                    {step.title}
+                  </h3>
+                  <p class="mt-2 text-base leading-relaxed text-secondary-text">
+                    {step.description}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section id="orcamento" class="bg-surface-sunken py-16 sm:py-20 lg:py-24">
+      <div class={`${container} ${split}`}>
+        <div class="lg:col-span-4">
+          <h2 class={h2}>Solicitar orçamento</h2>
+          <p class={lead}>
+            Conte o que você precisa. A mensagem é montada aqui e aberta no seu
+            WhatsApp, e eu respondo por lá.
+          </p>
+
+          <dl class="mt-8 space-y-4 text-base">
+            <div>
+              <dt class="text-sm text-secondary-text">WhatsApp</dt>
+              <dd class="mt-1">
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class={textLink}
+                >
+                  {site.contact.phoneDisplay}
+                  <span class="sr-only"> (abre em nova aba)</span>
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm text-secondary-text">E-mail</dt>
+              <dd class="mt-1">
+                <a href={emailHref} class={textLink}>{site.contact.email}</a>
+              </dd>
+            </div>
+          </dl>
+
+          <p class="mt-8 text-sm text-secondary-text">
+            Prefere ver o trabalho antes?{" "}
+            <a href="/#projetos" class={textLink}>Ver portfólio</a>
+          </p>
+        </div>
+
+        <form
+          id="budget-form"
+          data-whatsapp={phoneDigits}
+          novalidate
+          class="mt-12 lg:col-span-8 lg:mt-0"
+        >
+          <div
+            id="form-summary"
+            role="alert"
+            hidden
+            class="mb-8 rounded-control border border-error p-4 text-sm text-primary-text"
+          >
+          </div>
+
+          <div class="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label for="budget-name" class={label}>
+                Nome <span class="font-normal text-secondary-text"
+                  >(obrigatório)</span
+                >
+              </label>
+              <input
+                id="budget-name"
+                name="name"
+                type="text"
+                required
+                autocomplete="name"
+                aria-describedby="budget-name-error"
+                class={field}
+              />
+              <p id="budget-name-error" class={errorText} hidden></p>
+            </div>
+
+            <div>
+              <label for="budget-contact" class={label}>
+                E-mail ou WhatsApp <span class="font-normal text-secondary-text"
+                  >(obrigatório)</span
+                >
+              </label>
+              <input
+                id="budget-contact"
+                name="contact"
+                type="text"
+                required
+                autocomplete="email"
+                aria-describedby="budget-contact-hint budget-contact-error"
+                class={field}
+              />
+              <p
+                id="budget-contact-hint"
+                class="mt-2 text-sm text-secondary-text"
+              >
+                Se for telefone, inclua o DDD.
+              </p>
+              <p id="budget-contact-error" class={errorText} hidden></p>
+            </div>
+
+            <div>
+              <label for="budget-type" class={label}>
+                Tipo de projeto <span class="font-normal text-secondary-text"
+                  >(obrigatório)</span
+                >
+              </label>
+              <select
+                id="budget-type"
+                name="projectType"
+                required
+                aria-describedby="budget-type-error"
+                class={field}
+              >
+                <option value="" selected>Selecione</option>
+                <option value="Landing page ou site institucional">
+                  Landing page ou site institucional
+                </option>
+                <option value="SEO técnico">SEO técnico</option>
+                <option value="Sistema sob medida">Sistema sob medida</option>
+                <option value="Automação">Automação</option>
+                <option value="Outro">Outro</option>
+              </select>
+              <p id="budget-type-error" class={errorText} hidden></p>
+            </div>
+
+            <div>
+              <label for="budget-deadline" class={label}>
+                Prazo desejado <span class="font-normal text-secondary-text"
+                  >(opcional)</span
+                >
+              </label>
+              <select id="budget-deadline" name="deadline" class={field}>
+                <option value="A definir">A definir</option>
+                <option value="O quanto antes">O quanto antes</option>
+                <option value="Em 1 a 2 meses">Em 1 a 2 meses</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <label for="budget-details" class={label}>
+              Resumo do projeto <span class="font-normal text-secondary-text"
+                >(obrigatório)</span
+              >
+            </label>
+            <p id="budget-details-hint" class={hint}>
+              Objetivo, funcionalidades e o que já existe hoje. Mínimo de 20
+              caracteres.
+            </p>
+            <textarea
+              id="budget-details"
+              name="details"
+              required
+              rows="6"
+              aria-describedby="budget-details-hint budget-details-error"
+              class={`${field} resize-y`}></textarea>
+            <p id="budget-details-error" class={errorText} hidden></p>
+          </div>
+
+          <div
+            class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6"
+          >
+            <button type="submit" class={`${btnPrimary} w-full sm:w-auto`}>
+              Enviar pelo WhatsApp
+            </button>
+            <p
+              id="form-status"
+              role="status"
+              aria-live="polite"
+              hidden
+              class="text-sm text-secondary-text"
+            >
+            </p>
+          </div>
+
+          <p class="mt-8 max-w-xl text-sm leading-relaxed text-secondary-text">
+            Este site não armazena o que você escreve. A mensagem é montada no
+            seu navegador e enviada por você, pelo WhatsApp.
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+  
+  <Fab
+    links={[
+      {
+        href: whatsappHref,
+        icon: "/whatsapp.svg",
+        label: "WhatsApp",
+        class: "bg-green-400/70",
+      }
+    ]}
+  />
+</Layout>

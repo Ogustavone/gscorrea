@@ -1,9 +1,21 @@
 ---
 import Layout from "@/layouts/Base.astro";
-import { site } from "@/data/site";
+import Hero from "@/components/home/Hero.astro";
+import Projects from "@/components/home/Projects.astro";
+import About from "@/components/home/About.astro";
+import Education from "@/components/home/Education.astro";
+import Contact from "@/components/home/Contact.astro";
 ---
 
-<Layout title={site.info.name} description="">
+<Layout
+  title="Gustavo Correa | Desenvolvedor Back-End .NET e Web"
+  description="Desenvolvimento de APIs em C#/.NET, sistemas web e automações. Portfólio com projetos em Astro, TypeScript, PostgreSQL e Rust."
+>
   <main>
+    <Hero />
+    <Projects />
+    <About />
+    <Education />
+    <Contact />
   </main>
 </Layout>

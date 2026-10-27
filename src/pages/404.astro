@@ -10,18 +10,28 @@ import { site } from "@/data/site";
   showHeaderFooter={false}
 >
   <main
-    class="flex min-h-[calc(100vh-160px)] flex-col items-center justify-center p-4 text-center"
+    class="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center"
   >
-    <div class="max-w-md">
-      <h1 class="text-6xl font-black text-zinc-900 dark:text-white">404</h1>
-      <p class="mt-4 text-lg font-medium text-zinc-600 dark:text-zinc-400">
-        Ops! A página que você está procurando não existe ou foi movida.
+    <div class="max-w-md w-full">
+      <span class="font-mono text-sm font-semibold tracking-wider text-primary">
+        404 NOT FOUND
+      </span>
+
+      <h1
+        tabindex="-1"
+        class="mt-2 text-5xl font-extrabold tracking-tight text-primary-text sm:text-6xl"
+      >
+        Página perdida<span class="text-primary">.</span>
+      </h1>
+
+      <p class="mt-4 text-sm text-secondary-text">
+        O link que você seguiu pode estar quebrado ou a página foi removida.
       </p>
 
-      <div class="mt-8">
+      <div class="mt-8 flex justify-center">
         <a
           href="/"
-          class="inline-flex h-11 items-center justify-center rounded-lg bg-zinc-900 px-6 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+          class="inline-flex h-10 items-center justify-center rounded-control bg-primary px-5 text-sm font-medium text-background transition-colors duration-(--duration-fast) hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text"
         >
           Voltar para o início
         </a>
