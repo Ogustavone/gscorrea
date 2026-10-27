@@ -1,4 +1,172 @@
 ---
-// Header.astro
+import { ArrowUpRight } from "@lucide/astro";
+
+interface NavItem {
+  name: string;
+  href: string;
+}
+
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === "/";
+
+const navItems: readonly NavItem[] = [
+  { name: "Início", href: "/" },
+  { name: "Projetos", href: isHome ? "#projetos" : "/#projetos" },
+  { name: "Sobre", href: isHome ? "#sobre" : "/#sobre" },
+  { name: "Formação", href: isHome ? "#formacao" : "/#formacao" },
+  { name: "Contato", href: isHome ? "#contato" : "/#contato" },
+];
+
+const isFreelanceActive = currentPath.startsWith("/freelance");
 ---
 
+<header
+  class="sticky top-0 z-50 w-full border-b border-border bg-surface/90 backdrop-blur-md"
+>
+  <nav
+    aria-label="Navegação principal"
+    class="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:gap-0"
+  >
+    <div class="flex items-center justify-between md:justify-start">
+      <a
+        class="flex items-center gap-2 rounded-lg text-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-text"
+        href="/"
+        aria-label="gscorrea, início"
+      >
+        <svg
+          class="size-6 shrink-0"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m4 6 5 6-5 6"></path>
+          <path d="M13 18h7"></path>
+        </svg>
+        <span class="font-mono text-xl leading-none font-medium tracking-tight">
+          gscorrea
+        </span>
+      </a>
+
+      <button
+        type="button"
+        data-menu-toggle
+        class="group flex size-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-surface text-secondary-text transition-colors hover:bg-background hover:text-primary-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text md:hidden"
+        aria-expanded="false"
+        aria-controls="menu-items"
+        aria-label="Abrir menu de navegação"
+      >
+        <svg
+          class="pointer-events-none block size-4 group-aria-expanded:hidden"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="3" x2="21" y1="6" y2="6"></line>
+          <line x1="3" x2="21" y1="12" y2="12"></line>
+          <line x1="3" x2="21" y1="18" y2="18"></line>
+        </svg>
+        <svg
+          class="pointer-events-none hidden size-4 group-aria-expanded:block"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div
+      id="menu-items"
+      class="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-(--duration-slow) ease-out-expo motion-reduce:transition-none motion-reduce:duration-0 data-[open]:grid-rows-[1fr] data-[open]:opacity-100 md:grid md:grid-rows-[1fr] md:opacity-100 md:data-[open]:opacity-100"
+    >
+      <div class="overflow-hidden">
+        <ul
+          class="flex flex-col items-stretch gap-2 pt-4 pb-3 md:flex-row md:items-center md:gap-1 md:py-0"
+        >
+          {
+            navItems.map((item) => {
+              const active = item.href === "/" && isHome;
+              return (
+                <li>
+                  <a
+                    href={item.href}
+                    class:list={[
+                      "block rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text",
+                      active
+                        ? "text-text"
+                        : "text-text-muted hover:bg-surface-raised hover:text-text",
+                    ]}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    {item.name}
+                  </a>
+                </li>
+              );
+            })
+          }
+          <li class="md:ml-3">
+            <a
+              href="/freelance"
+              class:list={[
+                "inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text",
+                isFreelanceActive
+                  ? "text-text"
+                  : "text-text-muted hover:bg-surface-raised hover:text-text",
+              ]}
+              aria-current={isFreelanceActive ? "page" : undefined}
+            >
+              Freelance
+              <ArrowUpRight class="size-3.5" aria-hidden="true" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const initMenu = (): void => {
+    const header = document.querySelector<HTMLElement>("header");
+    const toggle = header?.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+    const menu = header?.querySelector<HTMLElement>("#menu-items");
+    if (!header || !toggle || !menu) return;
+
+    const setOpen = (open: boolean): void => {
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute(
+        "aria-label",
+        open ? "Fechar menu de navegação" : "Abrir menu de navegação",
+      );
+      menu.toggleAttribute("data-open", open);
+    };
+
+    setOpen(false);
+    toggle.addEventListener("click", () => {
+      setOpen(toggle.getAttribute("aria-expanded") !== "true");
+    });
+    menu.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest("a")) setOpen(false);
+    });
+    header.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+  };
+
+  document.addEventListener("astro:page-load", initMenu);
+</script>

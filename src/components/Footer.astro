@@ -1,4 +1,124 @@
 ---
-// Footer.astro
+import { existsSync } from "node:fs";
+import { site } from "@/data/site";
+
+const year = new Date().getFullYear();
+const domain = new URL(site.info.url).hostname.replace(/^www\./, "");
+const city = `${site.data.addressLocality}, ${site.data.addressRegion}`;
+
+const emailHref = `mailto:${site.contact.email}`;
+const resumeHref = "/curriculo-gustavo.pdf";
+const resumeExists = existsSync("public/curriculo-gustavo.pdf");
+
+const linkClass =
+  "rounded-sm text-text-muted transition-colors duration-(--duration-base) hover:text-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-text";
+
+const navLinks = [
+  { href: "/#projetos", label: "Projetos" },
+  { href: "/#sobre", label: "Sobre" },
+  { href: "/#formacao", label: "Formação" },
+  { href: "/#contato", label: "Contato" },
+];
 ---
 
+<footer class="border-t border-border bg-background">
+  <div class="mx-auto w-full max-w-7xl px-4">
+    <div
+      class="grid gap-10 py-12 md:grid-cols-[minmax(0,1fr)_auto] md:items-start md:gap-16"
+    >
+      <div class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold tracking-tight text-text">
+          Gustavo Correa
+        </h2>
+        <p class="max-w-xs font-mono text-meta-sm text-text-muted">
+          {domain} · {city}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-10 sm:grid-cols-3 md:gap-14">
+        <nav aria-label="Navegação do rodapé">
+          <h3
+            class="mb-3 font-mono text-[11px] uppercase tracking-widest text-text-muted"
+          >
+            Navegação
+          </h3>
+          <ul class="flex flex-col gap-2 text-sm">
+            {
+              navLinks.map(({ href, label }) => (
+                <li>
+                  <a href={href} class={linkClass}>
+                    {label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <nav aria-label="Redes sociais">
+          <h3
+            class="mb-3 font-mono text-[11px] uppercase tracking-widest text-text-muted"
+          >
+            Social
+          </h3>
+          <ul class="flex flex-col gap-2 text-sm">
+            <li>
+              <a
+                href={site.socials.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                class={linkClass}
+              >
+                GitHub
+                <span class="sr-only"> (abre em nova aba)</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href={site.socials.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                class={linkClass}
+              >
+                LinkedIn
+                <span class="sr-only"> (abre em nova aba)</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div>
+          <h3
+            class="mb-3 font-mono text-[11px] uppercase tracking-widest text-text-muted"
+          >
+            Contato
+          </h3>
+          <ul class="flex flex-col gap-2 text-sm">
+            <li><a href={emailHref} class={linkClass}>E-mail</a></li>
+            {
+              resumeExists && (
+                <li>
+                  <a
+                    href={resumeHref}
+                    download
+                    aria-label="Baixar currículo de Gustavo Correa em PDF"
+                    class={linkClass}
+                  >
+                    Currículo (PDF)
+                  </a>
+                </li>
+              )
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex flex-col gap-2 border-t border-border py-5 font-mono text-meta-sm text-text-muted sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {year} Gustavo Correa · Todos os direitos reservados</p>
+      <a href="#top" class={linkClass}>Voltar ao topo ↑</a>
+    </div>
+  </div>
+</footer>
