@@ -7,9 +7,6 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://www.gscorrea.com.br',
   vite: {
-    server: {
-      allowedHosts: true, // TODO: remover em prod
-    },
     plugins: [tailwindcss()],
   },
 
