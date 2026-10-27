@@ -1,0 +1,13 @@
+name = "gscorrea"
+compatibility_date = "2026-10-26"
+
+[assets]
+directory = "./dist/client"
+
+[[routes]]
+pattern = "gscorrea.com.br/*"
+zone_name = "gscorrea.com.br"
+
+[[routes]]
+pattern = "www.gscorrea.com.br/*"
+zone_name = "gscorrea.com.br"
