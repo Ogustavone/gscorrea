@@ -1,0 +1,129 @@
+---
+import { ArrowRight, ArrowUpRight } from "@lucide/astro";
+import Reveal from "@/components/Reveal.astro";
+import { site } from "@/data/site";
+
+const phoneDigits = site.contact.phone.replace(/\D/g, "");
+
+const emailHref = `mailto:${site.contact.email}?subject=${encodeURIComponent(
+  "Contato pelo portfólio",
+)}`;
+
+const whatsappHref = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(
+  "Olá, Gustavo! Vi seu portfólio e gostaria de conversar.",
+)}`;
+---
+
+<section
+  id="contato"
+  aria-labelledby="contato-titulo"
+  class="scroll-mt-24 py-20 sm:py-24"
+>
+  <div class="mx-auto w-full max-w-7xl px-4">
+    <Reveal>
+      <p class="font-mono text-meta text-text-muted uppercase">Contato</p>
+
+      <h2
+        id="contato-titulo"
+        class="mt-5 max-w-3xl font-display text-heading text-text sm:text-title"
+      >
+        Tem uma vaga ou um projeto para colocar no ar?
+      </h2>
+
+      <p class="mt-5 max-w-2xl text-body-lg text-text-muted">
+        Estou aberto a oportunidades em times de engenharia e a projetos sob
+        demanda. Se você tem uma vaga, um escopo ou uma dúvida técnica, me chame
+        direto — sem formulário obrigatório.
+      </p>
+
+      <div class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <a
+          href={emailHref}
+          class="group inline-flex items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-sm font-semibold text-background transition-colors duration-(--duration-base) hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-text"
+        >
+          Falar comigo
+          <span
+            class="inline-flex transition-transform duration-(--duration-base) ease-out-expo group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none"
+          >
+            <ArrowRight class="size-4" aria-hidden="true" />
+          </span>
+        </a>
+
+        <a
+          href="/freelance"
+          class="inline-flex w-fit items-center gap-2 border-b border-border pb-1 font-mono text-meta text-text-muted transition-colors duration-(--duration-base) hover:border-border-strong hover:text-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-text"
+        >
+          Freelance
+          <ArrowUpRight class="size-3.5" aria-hidden="true" />
+        </a>
+      </div>
+
+      <dl class="mt-16 grid border-t border-border sm:grid-cols-2 sm:gap-x-12">
+        <div class="flex flex-col gap-2 border-b border-border py-5">
+          <dt class="font-mono text-meta-sm text-text-muted uppercase">
+            E-mail
+          </dt>
+          <dd>
+            <a
+              href={emailHref}
+              class="text-body text-text transition-colors duration-(--duration-base) hover:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text"
+            >
+              {site.contact.email}
+            </a>
+          </dd>
+        </div>
+
+        <div class="flex flex-col gap-2 border-b border-border py-5">
+          <dt class="font-mono text-meta-sm text-text-muted uppercase">
+            WhatsApp
+          </dt>
+          <dd>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-body text-text transition-colors duration-(--duration-base) hover:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text"
+            >
+              {site.contact.phoneDisplay}
+              <span class="sr-only"> (abre em nova aba)</span>
+            </a>
+          </dd>
+        </div>
+
+        <div class="flex flex-col gap-2 border-b border-border py-5">
+          <dt class="font-mono text-meta-sm text-text-muted uppercase">
+            GitHub
+          </dt>
+          <dd>
+            <a
+              href={site.socials.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-body text-text transition-colors duration-(--duration-base) hover:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text"
+            >
+              github.com/{site.socials.username}
+              <span class="sr-only"> (abre em nova aba)</span>
+            </a>
+          </dd>
+        </div>
+
+        <div class="flex flex-col gap-2 border-b border-border py-5">
+          <dt class="font-mono text-meta-sm text-text-muted uppercase">
+            LinkedIn
+          </dt>
+          <dd>
+            <a
+              href={site.socials.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-body text-text transition-colors duration-(--duration-base) hover:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text"
+            >
+              linkedin.com/in/{site.socials.username}
+              <span class="sr-only"> (abre em nova aba)</span>
+            </a>
+          </dd>
+        </div>
+      </dl>
+    </Reveal>
+  </div>
+</section>

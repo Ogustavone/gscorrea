@@ -1,0 +1,120 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"dialog"> {
+  id: string;
+}
+
+const { class: className, ...attrs } = Astro.props as Props;
+---
+
+<dialog {...attrs} class={className} data-modal>
+  <slot />
+</dialog>
+
+<style is:global>
+  @layer theme, base, components, utilities;
+
+  dialog[data-modal] {
+    margin: auto;
+  }
+
+  @layer components {
+    dialog[data-modal] {
+      width: 100%;
+      max-width: min(32rem, calc(100% - 1.5rem));
+      max-height: calc(100dvh - 1.5rem);
+      opacity: 0;
+      transform: scale(0.95);
+      transition:
+        opacity var(--modal-duration, var(--duration-base)) var(--ease-out-expo),
+        transform var(--modal-duration, var(--duration-base)) var(--ease-out-expo),
+        display var(--modal-duration, var(--duration-base)) allow-discrete,
+        overlay var(--modal-duration, var(--duration-base)) allow-discrete;
+    }
+
+    dialog[data-modal][open] {
+      opacity: 1;
+      transform: none;
+    }
+
+    dialog[data-modal]::backdrop {
+      background: var(--modal-backdrop, var(--color-backdrop));
+      opacity: 0;
+      transition:
+        opacity var(--modal-duration, var(--duration-base)) var(--ease-out-expo),
+        display var(--modal-duration, var(--duration-base)) allow-discrete,
+        overlay var(--modal-duration, var(--duration-base)) allow-discrete;
+    }
+
+    dialog[data-modal][open]::backdrop {
+      opacity: 1;
+    }
+
+    @starting-style {
+      dialog[data-modal][open] {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      dialog[data-modal][open]::backdrop {
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      dialog[data-modal],
+      dialog[data-modal]::backdrop {
+        transition: none;
+      }
+    }
+  }
+
+  html:has(dialog[data-modal][open]) {
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  const initModals = (): void => {
+    const openers = document.querySelectorAll<HTMLButtonElement>("[data-modal-open]");
+
+    openers.forEach((opener) => {
+      const id = opener.dataset.modalOpen;
+      const dialog = id ? document.getElementById(id) : null;
+      if (!(dialog instanceof HTMLDialogElement)) return;
+
+      opener.setAttribute("aria-expanded", "false");
+      opener.addEventListener("click", () => {
+        if (dialog.open) return;
+        dialog.showModal();
+        opener.setAttribute("aria-expanded", "true");
+      });
+
+      dialog.addEventListener("close", () => {
+        opener.setAttribute("aria-expanded", "false");
+      });
+      dialog.addEventListener("click", (event) => {
+        const target = event.target;
+        if (target instanceof Element && target.closest("[data-modal-close]")) {
+          dialog.close();
+          return;
+        }
+
+        if (target === dialog) {
+          const bounds = dialog.getBoundingClientRect();
+          if (
+            event.clientX < bounds.left ||
+            event.clientX > bounds.right ||
+            event.clientY < bounds.top ||
+            event.clientY > bounds.bottom
+          ) {
+            dialog.close();
+          }
+        }
+      });
+    });
+  };
+
+  document.addEventListener("astro:page-load", initModals);
+</script>
+

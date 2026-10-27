@@ -1,0 +1,60 @@
+---
+import type { ImageMetadata } from "astro";
+
+interface Link {
+  href: string;
+  icon: ImageMetadata | string;
+  label?: string;
+  newTab?: boolean;
+  class?: string;
+}
+
+interface Props {
+  links: Link[];
+  class?: string;
+}
+
+const { links, class: className = "" } = Astro.props;
+
+const src = (icon: Link["icon"]) =>
+  typeof icon === "string" ? icon : icon.src;
+const opensNewTab = ({ href, newTab }: Link) =>
+  newTab ?? !/^(tel|mailto|sms):/.test(href);
+---
+
+<div
+  class:list={["fixed right-5 bottom-5 z-50 flex flex-col gap-3", className]}
+>
+  {
+    links.map((link) => (
+      <a
+        href={link.href}
+        aria-label={
+          link.label && opensNewTab(link)
+            ? `${link.label} (abre em nova aba)`
+            : link.label
+        }
+        title={link.label}
+        target={opensNewTab(link) ? "_blank" : undefined}
+        rel={opensNewTab(link) ? "noopener noreferrer" : undefined}
+        class:list={[
+          "flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12",
+          "text-white rounded-full shadow-lg transition-transform",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text",
+          "active:scale-110 hover:scale-110",
+          link.class ?? "bg-neutral-800",
+        ]}
+      >
+        <img
+          src={src(link.icon)}
+          alt=""
+          width="24"
+          height="24"
+          loading="eager"
+          decoding="async"
+          class="block w-6 h-6"
+        />
+      </a>
+    ))
+  }
+</div>

@@ -1,0 +1,214 @@
+---
+import { Image } from "astro:assets";
+import { ChevronLeft, ChevronRight } from "@lucide/astro";
+import type { ImageMetadata } from "astro";
+import type { ProjectImage } from "@/data/projects";
+
+interface Props {
+  images: readonly ProjectImage[];
+  fallback: ImageMetadata;
+  title: string;
+}
+
+const { images, fallback, title } = Astro.props;
+
+const total = String(images.length).padStart(2, "0");
+const isPortrait =
+  images[0] !== undefined && images[0].src.height > images[0].src.width;
+
+const widthsFor = (width: number): number[] =>
+  width >= 1440 ? [480, 800, 1080, 1440] : [480, 800, width];
+---
+
+<div
+  class="border-b border-border"
+  data-gallery
+  data-active="0"
+  role="group"
+  aria-roledescription="galeria"
+  aria-label={`Galeria de imagens do projeto ${title}`}
+>
+  <div class="relative bg-surface-sunken">
+    <div
+      class:list={[
+        "relative mx-auto w-full",
+        isPortrait ? "h-[62vh] max-h-136" : "aspect-4/3",
+      ]}
+    >
+      {
+        images.map((image, index) => (
+          <Image
+            src={image.src}
+            alt={image.alt}
+            widths={widthsFor(image.src.width)}
+            sizes="(min-width: 768px) 42rem, 92vw"
+            format="webp"
+            quality={82}
+            loading="lazy"
+            decoding="async"
+            data-gallery-image
+            data-index={index}
+            data-fallback={fallback.src}
+            hidden={index !== 0}
+            class="absolute inset-0 h-full w-full object-contain p-2 sm:p-4"
+          />
+        ))
+      }
+    </div>
+
+    {
+      images.length > 1 && (
+        <>
+          <button
+            type="button"
+            data-gallery-prev
+            aria-label={`Imagem anterior do projeto ${title}`}
+            class="absolute top-1/2 left-2 flex size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-control border border-border bg-surface/90 text-text backdrop-blur-xs transition-colors hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text sm:left-3"
+          >
+            <ChevronLeft class="size-5" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            data-gallery-next
+            aria-label={`Próxima imagem do projeto ${title}`}
+            class="absolute top-1/2 right-2 flex size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-control border border-border bg-surface/90 text-text backdrop-blur-xs transition-colors hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text sm:right-3"
+          >
+            <ChevronRight class="size-5" aria-hidden="true" />
+          </button>
+        </>
+      )
+    }
+  </div>
+
+  <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-3">
+    <p
+      data-gallery-caption
+      aria-live="polite"
+      class="max-w-136 text-sm text-text"
+    >
+      {images[0]?.caption}
+    </p>
+    <p class="font-mono text-meta-sm text-text-muted">
+      <span data-gallery-current>01</span> / {total}
+    </p>
+  </div>
+
+  {
+    images.length > 1 && (
+      <div class="flex gap-2 overflow-x-auto border-t border-border px-5 py-3">
+        {images.map((image, index) => (
+          <button
+            type="button"
+            data-gallery-thumb
+            data-index={index}
+            data-caption={image.caption}
+            aria-label={`Ver imagem ${index + 1} de ${images.length}: ${image.caption}`}
+            aria-current={index === 0 ? "true" : "false"}
+            class:list={[
+              "relative w-14 shrink-0 cursor-pointer overflow-hidden rounded-control border bg-surface-sunken transition-colors hover:border-border-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text sm:w-16",
+              index === 0 ? "border-text" : "border-border",
+            ]}
+          >
+            <Image
+              src={image.src}
+              alt=""
+              width={96}
+              height={96}
+              fit="cover"
+              format="webp"
+              quality={75}
+              loading="lazy"
+              decoding="async"
+              data-fallback={fallback.src}
+              class="aspect-square h-auto w-full object-cover"
+            />
+          </button>
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<script>
+  const showImage = (gallery: HTMLElement, index: number): void => {
+    const images = Array.from(
+      gallery.querySelectorAll<HTMLElement>("[data-gallery-image]"),
+    );
+    if (!images.length) return;
+
+    const activeIndex = (index + images.length) % images.length;
+    gallery.dataset.active = String(activeIndex);
+
+    images.forEach((image, imageIndex) => {
+      image.hidden = imageIndex !== activeIndex;
+    });
+
+    const thumbs = Array.from(
+      gallery.querySelectorAll<HTMLButtonElement>("[data-gallery-thumb]"),
+    );
+    thumbs.forEach((thumb, thumbIndex) => {
+      const active = thumbIndex === activeIndex;
+      thumb.setAttribute("aria-current", String(active));
+      thumb.classList.toggle("border-text", active);
+      thumb.classList.toggle("border-border", !active);
+    });
+
+    const caption = gallery.querySelector<HTMLElement>("[data-gallery-caption]");
+    const current = gallery.querySelector<HTMLElement>("[data-gallery-current]");
+    if (caption && thumbs[activeIndex]) {
+      caption.textContent = thumbs[activeIndex].dataset.caption ?? "";
+    }
+    if (current) {
+      current.textContent = String(activeIndex + 1).padStart(2, "0");
+    }
+  };
+
+  const initGalleries = (): void => {
+    document.querySelectorAll<HTMLElement>("[data-gallery]").forEach((gallery) => {
+      gallery.querySelectorAll<HTMLImageElement>("img[data-fallback]").forEach((image) => {
+        image.addEventListener("error", () => {
+          const fallback = image.dataset.fallback;
+          if (!fallback || image.dataset.fallbackApplied === "true") return;
+
+          image.dataset.fallbackApplied = "true";
+          image.removeAttribute("srcset");
+          image.removeAttribute("sizes");
+          image.src = fallback;
+        });
+      });
+
+      gallery.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+
+        const thumb = target.closest<HTMLButtonElement>("[data-gallery-thumb]");
+        if (thumb) {
+          showImage(gallery, Number(thumb.dataset.index ?? 0));
+          return;
+        }
+
+        const control = target.closest<HTMLElement>(
+          "[data-gallery-prev], [data-gallery-next]",
+        );
+        if (!control) return;
+        const active = Number(gallery.dataset.active ?? 0);
+        showImage(
+          gallery,
+          active + (control.hasAttribute("data-gallery-next") ? 1 : -1),
+        );
+      });
+
+      const keyboardTarget: HTMLElement =
+        gallery.closest("dialog[data-modal]") ?? gallery;
+      keyboardTarget.addEventListener("keydown", (event: KeyboardEvent) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        const active = Number(gallery.dataset.active ?? 0);
+        showImage(gallery, active + (event.key === "ArrowRight" ? 1 : -1));
+      });
+    });
+  };
+
+  document.addEventListener("astro:page-load", initGalleries);
+</script>
+

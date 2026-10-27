@@ -1,0 +1,88 @@
+---
+import Reveal from "@/components/Reveal.astro";
+
+const delivered = [
+  {
+    year: "2026",
+    label: "Site · cliente",
+    title: "Plenitude ASL",
+    description:
+      "Site institucional em Astro, TypeScript e Tailwind, no ar em domínio próprio com as seções de serviços, atendimento e sobre publicadas. Inclui deploy na Cloudflare, SEO técnico e dados estruturados, além de e-mail UOL com acesso pelo Gmail, página da empresa no LinkedIn e Perfil da Empresa no Google.",
+  },
+  {
+    year: "2024",
+    label: "IoT · pessoal",
+    title: "ESP32 IoT",
+    description:
+      "Sistema pessoal com ESP32 e Blynk para ligar as lâmpadas de casa à distância.",
+  },
+] as const;
+---
+
+<section
+  id="formacao"
+  aria-labelledby="formacao-titulo"
+  class="scroll-mt-24 border-b border-border py-20 sm:py-24"
+>
+  <div class="mx-auto w-full max-w-7xl px-4">
+    <Reveal>
+      <h2 id="formacao-titulo" class="font-display text-heading text-text">
+        Formação
+      </h2>
+
+      <div class="mt-10 border-t border-border">
+        <article
+          class="grid gap-6 py-8 md:grid-cols-[11rem_minmax(0,1fr)] md:gap-12 md:py-10"
+        >
+          <div>
+            <p class="font-display text-year text-text">2026</p>
+            <p
+              class="mt-3 flex items-center gap-2 font-mono text-meta-sm text-text-muted"
+            >
+              <span
+                class="size-1.5 rounded-full bg-text-muted"
+                aria-hidden="true"></span>
+              concluído em julho
+            </p>
+          </div>
+
+          <div class="md:border-l md:border-border md:pl-10">
+            <h3 class="font-display text-course text-text">
+              Análise e Desenvolvimento de Sistemas{" "}
+              <span class="text-text-muted">(tecnólogo)</span>
+            </h3>
+            <p class="mt-3 font-mono text-meta text-text-muted">
+              Estácio · 2 anos e meio (5 semestres)
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <div class="mt-14">
+        <h3 class="font-mono text-meta text-text-muted uppercase">
+          Trabalhos entregues
+        </h3>
+
+        <ul class="mt-5 border-t border-border">
+          {
+            delivered.map((item) => (
+              <li class="grid gap-4 border-b border-border py-6 md:grid-cols-[11rem_minmax(0,1fr)] md:gap-12">
+                <p class="font-mono text-meta-sm text-text-muted">
+                  {item.year} · {item.label}
+                </p>
+                <div>
+                  <h4 class="font-display text-subtitle text-text">
+                    {item.title}
+                  </h4>
+                  <p class="mt-2 max-w-2xl text-body text-text-muted">
+                    {item.description}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </Reveal>
+  </div>
+</section>

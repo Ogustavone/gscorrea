@@ -1,0 +1,72 @@
+---
+import { ArrowDown, ArrowRight } from "@lucide/astro";
+import Reveal from "@/components/Reveal.astro";
+import { site } from "@/data/site";
+
+const [firstName, ...lastNameParts] = site.info.name.split(" ");
+const lastName = lastNameParts.join(" ");
+const role = "Desenvolvedor Back-end";
+const city = `${site.data.addressLocality}, ${site.data.addressRegion}`;
+---
+
+<section class="border-b border-border">
+  <div
+    class="mx-auto flex w-full max-w-7xl flex-col px-4 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:min-h-svh lg:pt-24 lg:pb-12"
+  >
+    <Reveal class="flex flex-1 flex-col">
+      <div
+        class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 font-mono text-meta text-text-muted uppercase"
+      >
+        <p>Portfólio</p>
+        <p>{city}</p>
+      </div>
+
+      <h1
+        id="conteudo"
+        tabindex="-1"
+        class="mt-8 font-display text-name text-text focus:outline-none sm:mt-10 lg:mt-12"
+      >
+        <span class="block">{firstName}</span>
+        <span class="block">{lastName}</span>
+      </h1>
+
+      <p class="mt-5 font-mono text-body text-text-muted sm:mt-6">{role}</p>
+
+      <p class="mt-6 max-w-2xl text-body-lg text-text-muted">
+        APIs REST em{" "}
+        <strong class="whitespace-nowrap font-medium text-text"
+          >C# / .NET</strong
+        >, com Entity Framework Core e PostgreSQL — do domínio à persistência.
+        Sistemas web em Astro e TypeScript quando o projeto pede.
+      </p>
+
+      <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <a
+          href="#contato"
+          class="group inline-flex items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-sm font-semibold text-background transition-colors duration-(--duration-base) hover:bg-hover focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-text"
+        >
+          Falar comigo
+          <span
+            class="inline-flex transition-transform duration-(--duration-base) ease-out-expo group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none"
+          >
+            <ArrowRight class="size-4" aria-hidden="true" />
+          </span>
+        </a>
+        <a
+          href="#projetos"
+          class="inline-flex items-center justify-center gap-2 rounded-control border border-border bg-surface px-5 py-3 text-sm font-semibold text-text transition-colors duration-(--duration-base) hover:border-border-strong hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-text"
+        >
+          Ver projetos
+          <ArrowDown class="size-4" aria-hidden="true" />
+        </a>
+      </div>
+
+      <div
+        class="mt-12 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-border pt-4 font-mono text-meta-sm text-text-muted lg:mt-auto lg:pt-4"
+      >
+        <p class="uppercase">Status</p>
+        <p>Aberto a oportunidades e projetos</p>
+      </div>
+    </Reveal>
+  </div>
+</section>
